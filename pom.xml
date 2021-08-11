@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ JBoss, Home of Professional Open Source.
+  ~ Copyright 2021 Red Hat, Inc., and individual contributors
+  ~ as indicated by the @author tags.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.apache.cxf</groupId>
+        <artifactId>cxf</artifactId>
+        <version>3.3.10</version>
+    </parent>
+
+    <groupId>org.apache.cxf</groupId>
+    <artifactId>jakartaee9-transformer</artifactId>
+    <version>1.0.0.Final-SNAPSHOT</version>
+
+    <name>Apache CXF Jakarta EE9 Transformer</name>
+
+    <properties>
+        <transformer.verison>0.2.0</transformer.verison>
+        <cxf.version>3.3.10</cxf.version>
+    </properties>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.apache.cxf</groupId>
+                <artifactId>cxf-rt-frontend-jaxws</artifactId>
+                <version>${cxf.version}</version>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-frontend-jaxws</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>${project.basedir}/src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.apache.cxf</groupId>
+                                    <artifactId>cxf-rt-frontend-jaxws</artifactId>
+                                    <type>pom</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.basedir}/target/input</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.apache.cxf</groupId>
+                                    <artifactId>cxf-rt-frontend-jaxws</artifactId>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.basedir}/target/input</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.apache.cxf</groupId>
+                                    <artifactId>cxf-rt-frontend-jaxws</artifactId>
+                                    <overWrite>true</overWrite>
+                                    <classifier>sources</classifier>
+                                    <outputDirectory>${project.build.directory}/input</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>properties</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>transform</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <property name="plugin_classpath" refid="maven.plugin.classpath"/>
+                                <java classname="org.eclipse.transformer.jakarta.JakartaTransformer">
+                                    <arg value="${project.build.directory}/input"/>
+                                    <arg value="${project.build.directory}/output/"/>
+                                    <arg value="-q"/>
+                                    <arg value="-o"/>
+                                    <classpath>
+                                        <pathelement path="${plugin_classpath}"/>
+                                    </classpath>
+                                </java>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.eclipse.transformer</groupId>
+                        <artifactId>org.eclipse.transformer.cli</artifactId>
+                        <version>${transformer.verison}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>ant-contrib</groupId>
+                        <artifactId>ant-contrib</artifactId>
+                        <version>1.0b3</version>
+                        <exclusions>
+                            <exclusion>
+                                <groupId>ant</groupId>
+                                <artifactId>ant</artifactId>
+                            </exclusion>
+                        </exclusions>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <configuration>
+                            <groupId>org.apache.cxf</groupId>
+                            <artifactId>cxf-rt-frontend-jaxws-jakartaee9</artifactId>
+                            <version>${cxf.version}</version>
+                            <file>${project.build.directory}/output/cxf-rt-frontend-jaxws-${cxf.version}.jar</file>
+                            <sources>${project.build.directory}/output/cxf-rt-frontend-jaxws-${cxf.version}-sources.jar</sources>
+                            <packaging>jar</packaging>
+                            <generatePom>false</generatePom>
+                            <pomFile>${project.build.directory}/output/cxf-rt-frontend-jaxws-${cxf.version}.pom</pomFile>
+                        </configuration>
+                        <id>install-jakaratee9</id>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <phase>install</phase>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
