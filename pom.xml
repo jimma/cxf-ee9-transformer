@@ -874,7 +874,6 @@
             <artifactId>cxf-tools-wsdlto-frontend-jaxws</artifactId>
             <version>${cxf.version}</version>
             <type>pom</type>
-
         </dependency>
 
         <dependency>
@@ -896,12 +895,12 @@
             <version>${cxf.version}</version>
             <type>pom</type>
         </dependency>
-        <!--dependency>
+        <dependency>
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-bom</artifactId>
             <version>${cxf.version}</version>
             <type>pom</type>
-        </dependency-->
+        </dependency>
         <dependency>
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf</artifactId>
@@ -931,6 +930,7 @@
                         <configuration>
                             <outputDirectory>${project.basedir}/target/input</outputDirectory>
                             <excludeTransitive>true</excludeTransitive>
+                            <excludeTypes>pom</excludeTypes>
                         </configuration>
                     </execution>
                 </executions>
@@ -1052,8 +1052,27 @@
                     </execution>
                 </executions>
             </plugin>
-            <!--TODO: make this simple-->
             <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <configuration>
+                            <useMavenLogger>true</useMavenLogger>
+                            <commandlineArgs>${project.basedir}/target/outputPom</commandlineArgs>
+                            <executable>${project.basedir}/src/main/resources/install.sh</executable>
+                        </configuration>
+                        <id>install-jakaratee9</id>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <phase>install</phase>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!--plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-install-plugin</artifactId>
                 <executions>
@@ -1075,7 +1094,7 @@
                         <phase>install</phase>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin-->
         </plugins>
     </build>
 </project>

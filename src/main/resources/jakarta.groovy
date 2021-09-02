@@ -1,9 +1,10 @@
-import java.util.logging.Logger
-import java.io.File
-import java.util.HashMap
-
 import groovy.xml.StreamingMarkupBuilder
 import groovy.xml.XmlUtil
+
+import java.io.File
+import java.util.HashMap
+import java.util.logging.Logger
+
 Logger log = Logger.getLogger("jakarta.groovy")
 
 def outputBuilder = new StreamingMarkupBuilder()
@@ -64,17 +65,17 @@ for (File pomFile : pomFiles) {
         }
     }
 
-        String result = outputBuilder.bind{
-            mkp.declareNamespace("":  "http://maven.apache.org/POM/4.0.0")
-            mkp.yield pom
-        }
-        File outputFile = new File(ouputDir.toString(), pomFile.getName())
-        def writer = outputFile.newWriter()
-        writer << XmlUtil.serialize(result)
-        writer.close()
-
-
+    String result = outputBuilder.bind {
+        mkp.declareNamespace("": "http://maven.apache.org/POM/4.0.0")
+        mkp.yield pom
     }
+    File outputFile = new File(ouputDir.toString(), pomFile.getName())
+    def writer = outputFile.newWriter()
+    writer << XmlUtil.serialize(result)
+    writer.close()
+
+
+}
 
 
 
