@@ -183,6 +183,12 @@
 
         <dependency>
             <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-rs-security-jose</artifactId>
+            <version>${cxf.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-tools-common</artifactId>
             <version>${cxf.version}</version>
         </dependency>
@@ -615,6 +621,13 @@
 
         <dependency>
             <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-rs-security-jose</artifactId>
+            <version>${cxf.version}</version>
+            <classifier>javadoc</classifier>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-tools-common</artifactId>
             <version>${cxf.version}</version>
             <classifier>javadoc</classifier>
@@ -877,6 +890,13 @@
         </dependency>
 
         <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-rs-security-jose</artifactId>
+            <version>${cxf.version}</version>
+            <type>pom</type>
+        </dependency>
+
+        <dependency>
             <groupId>org.apache.cxf.services.sts</groupId>
             <artifactId>cxf-services-sts-core</artifactId>
             <version>${cxf.version}</version>
@@ -964,6 +984,7 @@
                     </execution>
                 </executions>
             </plugin>
+            <!--- Transform the cxf artifacts with jakarta namespace-->
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <executions>
@@ -1008,6 +1029,8 @@
                     </dependency>
                 </dependencies>
             </plugin>
+
+            <!-- Replace the pom with jakarta dependencies. The replacement mapping items is defined in gav.map-->
             <plugin>
                 <groupId>org.codehaus.gmavenplus</groupId>
                 <artifactId>gmavenplus-plugin</artifactId>
@@ -1052,6 +1075,7 @@
                     </execution>
                 </executions>
             </plugin>
+            <!-- Install transformed artifacts to local repository-->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
@@ -1071,30 +1095,6 @@
                     </execution>
                 </executions>
             </plugin>
-
-            <!--plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-install-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <configuration>
-                            <groupId>org.apache.cxf</groupId>
-                            <artifactId>cxf-core-${jakarta.suffix}</artifactId>
-                            <version>${cxf.version}</version>
-                            <file>${project.build.directory}/output/cxf-core-${cxf.version}.jar</file>
-                            <sources>${project.build.directory}/output/cxf-core-${cxf.version}-sources.jar</sources>
-                            <packaging>jar</packaging>
-                            <generatePom>false</generatePom>
-                            <pomFile>${project.build.directory}/outputPom/cxf-core-${cxf.version}.pom</pomFile>
-                        </configuration>
-                        <id>install-jakaratee9</id>
-                        <goals>
-                            <goal>install-file</goal>
-                        </goals>
-                        <phase>install</phase>
-                    </execution>
-                </executions>
-            </plugin-->
         </plugins>
     </build>
 </project>
