@@ -12,7 +12,7 @@ do
   if [[ $sname == cxf-[0-9]* ]] || [[ $sname == cxf-parent-* ]] || [[ $sname == cxf-bom-* ]];then
     mvn -N install:install-file -DgroupId=org.apache.cxf \
                              -DartifactId=$artifactId-jakarta \
-                             -Dversion=$versionId \
+                             -Dversion=$versionId-jbossorg-1 \
                              -Dfile=$pomDir/$artifactId-$versionId.pom \
                              -Dpackaging=pom
   else
@@ -24,7 +24,7 @@ do
     fi
     mvn install:install-file -DgroupId=$groupId \
                              -DartifactId=$artifactId-jakarta \
-                             -Dversion=$versionId \
+                             -Dversion=$versionId-jbossorg-1 \
                              -Dfile=$outputDir/$artifactId-$versionId.jar \
                              -Dsources=$outputDir/$artifactId-$versionId-sources.jar \
                              -Djavadoc=$outputDir/$artifactId-$versionId-javadoc.jar \
